@@ -5,3 +5,5 @@ from .models import *
 admin.site.register(GroceryItem)
 admin.site.register(Category)
 admin.site.register(Recipe)
+admin.site.register(Ingredient)
+admin.site.register(RecipeIngredient)

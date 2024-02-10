@@ -1,14 +1,18 @@
 from django.db import models
+from django.urls import reverse
 
-# Create your models here.
-## CATEGORY
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
-## ITEM
+class Ingredient(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
 class GroceryItem(models.Model):
     name = models.CharField(max_length=100)
     quantity = models.IntegerField()
@@ -22,14 +26,29 @@ class GroceryItem(models.Model):
     notes = models.TextField(null=True)
 
     def __str__(self):
-        return f"{self.name} - Quantity: {self.quantity}"
-    
-## RECIPE
+        return self.name
+
 class Recipe(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField()
-    ingredients = models.ManyToManyField(GroceryItem, related_name='recipes')
-    instructions = models.TextField()
+    description = models.TextField(null=True)
+    image = models.URLField(default='https://example.com/default-image.jpg')
+    ingredients = models.ManyToManyField(Ingredient, through='RecipeIngredient', related_name='recipes')
+    mealtype = models.TextField(null=True)
+    time = models.CharField(max_length=100, null=True)
+    portions = models.IntegerField(null=True)
+    instructions = models.TextField(null=True)
+    cuisine = models.CharField(max_length=100, null=True)
+
+    def get_absolute_url(self):
+        return reverse('recipe_detail', args=[str(self.id)])
 
     def __str__(self):
         return self.name
+
+class RecipeIngredient(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    amount = models.CharField(max_length=100, null=True)
+
+    def __str__(self):
+        return f"{self.recipe} - {self.ingredient} - {self.amount}"

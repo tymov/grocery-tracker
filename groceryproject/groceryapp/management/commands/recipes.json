@@ -1,0 +1,21 @@
+{
+    "recipes": [{
+            "name": "Pasta Carbonara",
+            "description": "A classic Italian pasta dish with eggs, cheese, and pancetta.",
+            "image": "https://example.com/pasta_carbonara.jpg",
+            "mealtype": "Main Course",
+            "time": "30 minutes",
+            "portions": 4,
+            "instructions": "1. Cook spaghetti according to package instructions. 2. In a bowl, whisk together eggs and grated Parmesan cheese. 3. In a pan, fry pancetta until crispy. 4. Drain spaghetti and toss with pancetta. 5. Add egg mixture to the spaghetti and toss until the sauce thickens. 6. Serve hot with black pepper and additional Parmesan cheese."
+        },
+        {
+            "name": "Chicken Stir-Fry",
+            "description": "A quick and easy stir-fry with chicken, vegetables, and soy sauce.",
+            "image": "https://example.com/chicken_stir_fry.jpg",
+            "mealtype": "Main Course",
+            "time": "20 minutes",
+            "portions": 4,
+            "instructions": "1. Heat oil in a pan. 2. Add sliced chicken breast and cook until browned. 3. Add sliced bell pepper, broccoli florets, and julienned carrots. 4. Stir in minced garlic and soy sauce. 5. Cook until vegetables are tender. 6. Serve hot with rice or noodles."
+        }
+    ]
+}

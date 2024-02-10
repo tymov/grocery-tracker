@@ -2,9 +2,11 @@ from django.shortcuts import get_object_or_404, render, redirect
 from .models import *
 from django.contrib.auth import authenticate, login
 from .forms import *
+from django.forms import formset_factory
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count
 
 # Login / Logout / Register / Password Reset
 def user_login(request):
@@ -41,11 +43,33 @@ def items(request):
         
     return render(request, 'groceryapp/items.html', {'items': items, 'categories': categories})
 
-
 @login_required
 def recipes(request):
     recipes = Recipe.objects.all()
+    
+    # Get all grocery items that exist in the database and convert to lowercase
+    existing_grocery_items = GroceryItem.objects.all().values_list('name', flat=True)
+    existing_grocery_items_list = [item.lower() for item in existing_grocery_items]
+    print("Existing Grocery Items:", existing_grocery_items_list)
+        
+    # Get the IDs of recipes containing any of the grocery items
+    recipe_ids = RecipeIngredient.objects.filter(ingredient__name__in=existing_grocery_items_list).values_list('recipe', flat=True).distinct()
+    print("Recipe IDs:", recipe_ids)
+        
+    # Fetch the recipes that have matching ingredients
+    recipes = Recipe.objects.filter(id__in=recipe_ids)
+    
+    recipe_name = request.GET.get('recipe_name')
+    if recipe_name != '' and recipe_name is not None:
+        recipes = recipes.filter(name__icontains=recipe_name)
+        
     return render(request, 'groceryapp/recipes.html', {'recipes': recipes})
+
+@login_required
+def recipe_detail(request, id):
+    recipe = Recipe.objects.get(id=id)
+    recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+    return render(request, 'groceryapp/recipe_detail.html', {'recipe': recipe, 'recipe_ingredients': recipe_ingredients})
 
 @login_required
 def addItem(request):
@@ -61,7 +85,7 @@ def addItem(request):
 @login_required
 def addRecipe(request):
     if request.method == "POST":
-        form = RecipeForm(request.POST)
+        form = RecipeForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('recipes')
@@ -121,13 +145,19 @@ def decrement_quantity(request, item_id):
     return JsonResponse({'quantity': item.quantity})
 
 @login_required
-def update_loss_graph(request, item_id):
-    # Your logic to update the loss graph
-    # Example:
-    try:
-        item = GroceryItem.objects.get(pk=item_id)
-        # Update the loss graph based on the item's category, quantity, and price
-        # Your logic here
-        return JsonResponse({'success': True})
-    except GroceryItem.DoesNotExist:
-        return JsonResponse({'success': False}, status=404)
+def addIngredients(request, id):
+    recipe = Recipe.objects.get(id=id)
+    IngredientFormSet = formset_factory(RecipeIngredientForm, extra=5)  # Adjust 'extra' as needed
+    
+    if request.method == "POST":
+        formset = IngredientFormSet(request.POST, prefix='ingredients')
+        if formset.is_valid():
+            for form in formset:
+                instance = form.save(commit=False)
+                instance.recipe = recipe
+                instance.save()
+            return redirect('recipes')
+    else:
+        formset = IngredientFormSet(prefix='ingredients')
+    
+    return render(request, 'groceryapp/addIngredients.html', {'formset': formset, 'recipe': recipe})

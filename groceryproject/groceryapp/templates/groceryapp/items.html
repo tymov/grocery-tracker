@@ -17,7 +17,7 @@
           if
           request.GET.movie_name
           %}
-          value="{{ request.GET.movie_name }}"
+          value="{{ request.GET.item_name }}"
           {%
           endif
           %}
@@ -31,11 +31,19 @@
     </div>
   </div>
 
-  <div class="row justify-content-center mt-3">
+  <div class="row justify-content-center mt-4">
     <table class="table table-striped shadow-sm">
       <thead>
         <tr class="shadow-sm">
-          <th class="py-3">Item</th>
+          <th class="py-3">
+            Item
+            <span
+              class="text-muted"
+              style="font-size: smaller; margin-left: 5px"
+            >
+              (Exp. Date)
+            </span>
+          </th>
           <th class="py-3">Quantity</th>
           <th class="py-3">Price</th>
           <th class="py-3">Price per Unit</th>
@@ -122,17 +130,8 @@
       <div class="col-md-6">
         <h2 class="">Expenses per Category</h2>
         <div class="row justify-content-start">
-          <div class="col-12">
+          <div class="col-12 mt-0">
             <canvas id="categoryChart" width="200" height="200"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <h2 class="justify-content-end right">Loss per Category</h2>
-        <div class="row justify-content-start">
-          <div class="col-12">
-            <canvas id="lossChart" width="200" height="200"></canvas>
           </div>
         </div>
       </div>
@@ -248,44 +247,6 @@
           quantityElement.innerHTML = data.quantity;
           priceElement.innerHTML =
             (data.quantity * data.price).toFixed(2) + "€";
-        })
-        .catch((error) => console.error("Error:", error));
-    }
-  </script>
-
-  <script>
-    document.querySelectorAll(".delete-btn").forEach((btn) => {
-      btn.addEventListener("click", function (event) {
-        event.preventDefault();
-        const itemId = this.getAttribute("data-id");
-        const quantity = parseFloat(
-          document.getElementById(`quantity_${itemId}`).innerText
-        );
-
-        if (quantity > 0) {
-          updateLossGraph(itemId);
-        } else {
-          // Proceed with deleting the item if quantity is 0 or less
-          window.location.href = this.getAttribute("href");
-        }
-      });
-    });
-
-    function updateLossGraph(itemId) {
-      fetch(`/update_loss_graph/${itemId}/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": "{{ csrf_token }}",
-        },
-        body: JSON.stringify({}),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to update loss graph");
-          }
-          // Proceed with deleting the item after updating the loss graph
-          window.location.href = `/deleteItem/${itemId}/`;
         })
         .catch((error) => console.error("Error:", error));
     }

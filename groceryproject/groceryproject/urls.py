@@ -18,24 +18,26 @@ from django.contrib import admin
 from django.urls import path
 from groceryapp import views
 from django.contrib.auth import views as auth_view
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('items/', views.items, name='items'),
     path('recipes/', views.recipes, name='recipes'),
+    path('recipe_detail/<int:id>', views.recipe_detail, name='recipe_detail'),
     path('items/addItem/', views.addItem, name='addItem'),
     path('recipes/addRecipe/', views.addRecipe, name='addRecipe'),
     path('items/editItem/<int:id>', views.editItem, name='editItem'),
     path('recipes/editRecipe/<int:id>', views.editRecipe, name='editRecipe'),
     path('items/deleteItem/<int:id>', views.deleteItem, name='deleteItem'),
     path('recipes/deleteRecipe/<int:id>', views.deleteRecipe, name='deleteRecipe'),
-    
+    path('recipe/addIngredient/<int:id>', views.addIngredients, name='addIngredients'),
     path('login/', views.user_login, name='login'),
     path('logout/', auth_view.LogoutView.as_view(template_name='groceryapp/logout.html'), name='logout'),
     # path('register/', views.register, name='register'),
     # path('password_reset/', views.password_reset, name='password_reset'),
-    
     path('decrement_quantity/<int:item_id>/', views.decrement_quantity, name='decrement_quantity'),
     path('increment_quantity/<int:item_id>/', views.increment_quantity, name='increment_quantity'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)   

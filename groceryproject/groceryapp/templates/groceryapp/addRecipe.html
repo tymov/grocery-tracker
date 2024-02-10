@@ -1,0 +1,110 @@
+{% extends 'groceryapp/base.html' %} {% load static %} {% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 my-4">
+      <h1>Add Recipe</h1>
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="id_name" class="form-label">Name</label>
+          {{ form.name }}
+        </div>
+        <div class="mb-3">
+          <label for="id_description" class="form-label">Description</label>
+          {{ form.description }}
+        </div>
+        <div class="mb-3">
+          <label for="id_image" class="form-label">Image URL</label>
+          {{ form.image }}
+        </div>
+        <div class="mb-3">
+          <label for="id_mealtype" class="form-label">Meal Type</label>
+          {{ form.mealtype }}
+        </div>
+        <div class="mb-3">
+          <label for="id_time" class="form-label">Time</label>
+          {{ form.time }}
+        </div>
+        <div class="mb-3">
+          <label for="id_portions" class="form-label">Portions</label>
+          {{ form.portions }}
+        </div>
+        <div class="mb-3">
+          <label for="id_instructions" class="form-label">Instructions</label>
+          {{ form.instructions }}
+        </div>
+        <div class="mb-3">
+          <label for="id_cuisine" class="form-label">Cuisine</label>
+          {{ form.cuisine }}
+        </div>
+
+        {% comment %} <!-- Ingredients section -->
+        <div class="mb-3">
+          <label class="form-label">Ingredients</label>
+          <div id="ingredients-container">
+            <!-- Initial ingredient input -->
+            <div class="ingredient-row mb-2">
+              <select
+                name="ingredient"
+                class="form-select ingredient-select"
+                placeholder="Ingredient"
+              >
+                {% for ingredient in ingredients %}
+                <option value="{{ ingredient.id }}">
+                  {{ ingredient.name }}
+                </option>
+                {% endfor %}
+              </select>
+              <input
+                type="text"
+                name="amount"
+                class="form-control amount"
+                placeholder="Amount"
+              />
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary" id="add-ingredient">
+            Add Ingredient
+          </button>
+        </div> {% endcomment %}
+
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Add event listener to the "Add Ingredient" button
+    document
+      .getElementById("add-ingredient")
+      .addEventListener("click", function () {
+        // Clone the ingredient row
+        var ingredientsContainer = document.getElementById(
+          "ingredients-container"
+        );
+        var newIngredientRow =
+          ingredientsContainer.firstElementChild.cloneNode(true);
+        ingredientsContainer.appendChild(newIngredientRow);
+      });
+
+    // Add event listener to dynamically filter ingredients dropdown
+    var ingredientSelects = document.querySelectorAll(".ingredient-select");
+    ingredientSelects.forEach(function (select) {
+      select.addEventListener("input", function (event) {
+        var input = event.target.value.toLowerCase();
+        var options = select.options;
+        for (var i = 0; i < options.length; i++) {
+          var option = options[i];
+          if (option.text.toLowerCase().indexOf(input) === -1) {
+            option.style.display = "none";
+          } else {
+            option.style.display = "block";
+          }
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

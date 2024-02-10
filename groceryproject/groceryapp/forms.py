@@ -36,17 +36,29 @@ class GroceryItemForm(forms.ModelForm):
             'expiration_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'location': forms.TextInput(attrs={'class': 'form-control'}),
         }
-        
-
-# Create a form for the Category model
-class CategoryForm(ModelForm):
-    class Meta:
-        model = Category
-        fields = '__all__'
-
 
 # Create a form for the Recipe model
-class RecipeForm(ModelForm):
+class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = '__all__'
+        fields = ['name', 'description', 'image', 'mealtype', 'time', 'portions', 'instructions', 'cuisine']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'image': forms.URLInput(attrs={'class': 'form-control'}),
+            'mealtype': forms.TextInput(attrs={'class': 'form-control'}),
+            'time': forms.TextInput(attrs={'class': 'form-control'}),
+            'portions': forms.NumberInput(attrs={'class': 'form-control'}),
+            'instructions': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+            'cuisine': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+        
+# Create a form for the RecipeIngredient model
+class RecipeIngredientForm(forms.ModelForm):
+    class Meta:
+        model = RecipeIngredient
+        fields = ['ingredient', 'amount']
+        widgets = {
+            'ingredient': forms.Select(attrs={'class': 'form-select'}),
+            'amount': forms.TextInput(attrs={'class': 'form-control'}),
+        }

@@ -1,0 +1,77 @@
+{% extends 'groceryapp/base.html' %} {% load static %} {% block body %}
+
+<div class="container">
+  <div class="row mt-3 align-items-center">
+    <div class="col">
+      <h1>Recipes</h1>
+    </div>
+
+    <div class="col">
+      <!-- Search form for recipe name -->
+      <form action="" method="get" class="d-flex">
+        <input
+          type="search"
+          name="recipe_name"
+          class="form-control me-2"
+          placeholder="Search"
+          aria-label="Search"
+          {%
+          if
+          request.GET.recipe_name
+          %}
+          value="{{ request.GET.recipe_name }}"
+          {%
+          endif
+          %}
+        />
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+      </form>
+
+      <!-- Form for filtering recipes based on grocery items -->
+      {% comment %} <form action="" method="get" class="d-flex">
+        <input type="hidden" name="filter" value="true" />
+        <button type="submit" class="btn btn-outline-primary">
+          Filter by Grocery Items
+        </button>
+      </form> {% endcomment %}
+    </div>
+
+    <div class="col text-end">
+      <a href="{% url 'addRecipe' %}" class="btn btn-primary">Add Recipe</a>
+    </div>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-3 mt-2 gap-4 container-fluid">
+    {% for recipe in recipes %}
+    <div class="recipe-card col shadow">
+      <a
+        href="{% url 'recipe_detail' recipe.id %}"
+        class="text-decoration-none"
+      >
+        <aside>
+          <img src="{{recipe.image}}" />
+        </aside>
+        <article>
+          <h2>{{recipe.name}}</h2>
+          <div>
+            <h3 class="mt-2">{{recipe.mealtype}}</h3>
+            <h3 class="mt-2">{{recipe.cuisine}}</h3>
+          </div>
+          <ul class="py-2">
+            <li>
+              <span class="icon icon-users"></span
+              ><span>{{recipe.portions}}</span>
+            </li>
+            <li>
+              <span class="icon icon-clock"></span><span>{{recipe.time}}</span>
+            </li>
+          </ul>
+          <p>{{recipe.description}}</p>
+        </article>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

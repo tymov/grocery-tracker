@@ -1,0 +1,54 @@
+{% extends 'groceryapp/base.html' %}
+{% load static %}
+{% block body %}
+
+<div class="container my-5">
+  <div class="row align-items-center">
+    <div class="col">
+      <h1>{{ recipe.name }}</h1>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col">
+                <h3 class="mb-3">Ingredients</h3>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'addIngredients' recipe.id %}" class="btn btn-primary">Add Ingredients</a>
+            </div>
+        </div>
+        
+      <ul class="list-group text-capitalize mt-2">
+        {% for recipe_ingredient in recipe_ingredients %}
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+        >
+          <span>{{ recipe_ingredient.ingredient }}</span>
+          <!-- Style the amount badge with a different background and text color -->
+          <span class="amount-badge px-3" style="background-color: rgba(173,  216,  230,  0.9); color: #eeeeee; font-weight: bold;">{{ recipe_ingredient.amount }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="col-md-8">
+      <!-- Style the recipe image -->
+      <div class="recipe-image-container">
+        <img
+          src="{{ recipe.image }}"
+          alt="recipe image"
+          class="img-fluid rounded"
+        />
+      </div>
+
+      <div>
+        <h3 class="mt-4">Instructions</h3>
+        <p>{{ recipe.instructions }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

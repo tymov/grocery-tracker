@@ -1,0 +1,25 @@
+{
+    "recipe_ingredients": [{
+            "name": "Pasta Carbonara",
+            "ingredients": [
+                { "name": "Spaghetti", "amount": "200g" },
+                { "name": "Eggs", "amount": "2" },
+                { "name": "Parmesan Cheese (grated)", "amount": "1/2 cup" },
+                { "name": "Pancetta (or bacon)", "amount": "100g" },
+                { "name": "Black Pepper", "amount": "to taste" }
+            ]
+        },
+        {
+            "name": "Chicken Stir-Fry",
+            "ingredients": [
+                { "name": "Chicken Breast", "amount": "500g" },
+                { "name": "Bell Pepper (sliced)", "amount": "1" },
+                { "name": "Broccoli Florets", "amount": "2 cups" },
+                { "name": "Carrots (julienned)", "amount": "2" },
+                { "name": "Garlic (minced)", "amount": "2 cloves" },
+                { "name": "Soy Sauce", "amount": "3 tbsp" },
+                { "name": "Cooking Oil", "amount": "2 tbsp" }
+            ]
+        }
+    ]
+}
