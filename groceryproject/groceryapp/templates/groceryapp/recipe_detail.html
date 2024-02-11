@@ -3,49 +3,44 @@
 {% block body %}
 
 <div class="container my-5">
-  <div class="row align-items-center">
+  <div class="row align-items-start">
     <div class="col">
-      <h1>{{ recipe.name }}</h1>
+      <h1 class="display-4 text-start text-uppercase mb-4 ">{{ recipe.name }}</h1>
+      <hr>
     </div>
   </div>
 
   <div class="row mt-4">
     <div class="col-md-4">
-        <div class="row">
-            <div class="col">
-                <h3 class="mb-3">Ingredients</h3>
-            </div>
-            <div class="col-auto">
-                <a href="{% url 'addIngredients' recipe.id %}" class="btn btn-primary">Add Ingredients</a>
-            </div>
+      <div class="ingredient-card shadow-sm glassmorphism">
+        <div class="ingredient-card-header bg-gradient-primary text-black">
+          <h3 class="mb-0 py-2">Ingredients</h3>
         </div>
-        
-      <ul class="list-group text-capitalize mt-2">
-        {% for recipe_ingredient in recipe_ingredients %}
-        <li
-          class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <span>{{ recipe_ingredient.ingredient }}</span>
-          <!-- Style the amount badge with a different background and text color -->
-          <span class="amount-badge px-3" style="background-color: rgba(173,  216,  230,  0.9); color: #eeeeee; font-weight: bold;">{{ recipe_ingredient.amount }}</span>
-        </li>
-        {% endfor %}
-      </ul>
+        <ul class="list-group list-group-flush text-capitalize">
+          {% for recipe_ingredient in recipe_ingredients %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="font-weight-bold">{{ recipe_ingredient.ingredient }}</span>
+            <span class="amount-badge px-3">{{ recipe_ingredient.amount }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+        {% if request.user == recipe.owner %}
+        <div class="ingredient-card-footer text-center">
+          <a href="{% url 'addIngredients' id=recipe.id %}" class="btn btn-outline-primary">Add Ingredients</a>
+        </div>
+        {% endif %}
+      </div>
+      
     </div>
 
     <div class="col-md-8">
-      <!-- Style the recipe image -->
-      <div class="recipe-image-container">
-        <img
-          src="{{ recipe.image }}"
-          alt="recipe image"
-          class="img-fluid rounded"
-        />
-      </div>
+      <aside>
+        <img src="{{recipe.image}}" style="height: 300px;" />
+      </aside>
 
-      <div>
-        <h3 class="mt-4">Instructions</h3>
-        <p>{{ recipe.instructions }}</p>
+      <div class="mt-4 bg-gradient-primary text-black text-center py-4 px-3 rounded">
+        <h3>Instructions</h3>
+        <p class="lead">{{ formatted_instructions | safe }}</p>
       </div>
     </div>
   </div>

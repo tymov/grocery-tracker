@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -22,8 +23,9 @@ class GroceryItem(models.Model):
     date_added = models.DateTimeField(auto_now_add=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, default=None)
     location = models.CharField(max_length=100)
-    unit_of_measure = models.CharField(max_length=100, null=True)
-    notes = models.TextField(null=True)
+    unit_of_measure = models.CharField(max_length=100, null=True, default=None)
+    notes = models.TextField(null=True, default=None)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)  # Add this line
 
     def __str__(self):
         return self.name
@@ -38,6 +40,7 @@ class Recipe(models.Model):
     portions = models.IntegerField(null=True)
     instructions = models.TextField(null=True)
     cuisine = models.CharField(max_length=100, null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def get_absolute_url(self):
         return reverse('recipe_detail', args=[str(self.id)])

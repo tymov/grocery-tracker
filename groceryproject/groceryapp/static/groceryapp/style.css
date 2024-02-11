@@ -204,15 +204,152 @@ img {
     /* Maintain aspect ratio */
 }
 
-.amount-badge {
-    background-color: lightgray;
-    /* Bootstrap primary color */
+.image-container {
+    width: 100%;
+    /* Or any desired fixed width */
+    max-width: 300px;
+    /* Or any desired maximum width */
+    height: auto;
+    /* Maintain aspect ratio */
+    overflow: hidden;
+    /* Hide excess content */
+}
+
+.image-container {
+    width: 100%;
+    /* Ensure the container takes up the full width */
+    height: 300px;
+    /* Set the height explicitly */
+    position: relative;
+    /* Needed for absolute positioning of the image */
+}
+
+.image-container img {
+    object-fit: cover;
+    width: 100%;
+    /* Image will cover the full width of the container */
+    height: 100%;
+    /* Image will cover the full height of the container */
+    position: absolute;
+    /* Position the image absolutely to cover the container */
+    top: 0;
+    left: 0;
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 100%);
+    overflow: hidden;
+    scroll-behavior: smooth;
+}
+
+.wrapper section {
+    width: 100%;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    margin: 20px 0;
+}
+
+.wrapper section .item {
+    position: relative;
+    padding: 0 2px;
+    transition: 250ms all;
+}
+
+.wrapper section .item:hover {
+    margin: 0 40px;
+    transform: scale(1.2);
+}
+
+.wrapper section .item .heading {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
     color: #fff;
-    /* White text color */
-    font-size: 14px;
-    /* Adjust the font size */
+}
+
+.wrapper section .item .duration {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    color: #fff;
+}
+
+.wrapper section .arrow__btn {
+    position: absolute;
+    color: #000000;
+    text-decoration: none;
+    font-size: 6em;
+    background: #00000000;
+    width: 80px;
+    padding: 20px;
+    text-align: center;
+    z-index: 1;
+}
+
+.wrapper section .left-arrow {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 0%);
+}
+
+.wrapper section .right-arrow {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 0%);
+}
+
+.ingredient-card {
+    background: #E6E6FA;
+    /* Lavender tone */
+    transition: background 0.3s ease;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.ingredient-card-header {
+    background: linear-gradient(45deg, #FFE4E1, #E6E6FA);
+    /* Gradient from misty rose to lavender */
+    color: #333;
+    /* Dark grey text color */
+    padding: 20px;
+    border-radius: 15px 15px 0 0;
+}
+
+.ingredient-card-footer {
+    background: rgba(255, 255, 255, 0.5);
+    /* Semi-transparent white background */
+    color: #555;
+    /* Light grey text color */
+    padding: 20px;
+    border-radius: 0 0 15px 15px;
+}
+
+.glassmorphism::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    background: inherit;
+    opacity: 0.1;
+    filter: blur(10px);
+}
+
+.glassmorphism {
+    position: relative;
+    overflow: hidden;
+}
+
+.amount-badge {
+    /* Light blue tone */
+    border-radius: 10px;
     padding: 5px 10px;
-    /* Add padding to the badge */
-    border-radius: 20px;
-    /* Make the badge round */
+    margin-left: auto;
 }

@@ -35,9 +35,10 @@ urlpatterns = [
     path('recipes/deleteRecipe/<int:id>', views.deleteRecipe, name='deleteRecipe'),
     path('recipe/addIngredient/<int:id>', views.addIngredients, name='addIngredients'),
     path('login/', views.user_login, name='login'),
-    path('logout/', auth_view.LogoutView.as_view(template_name='groceryapp/logout.html'), name='logout'),
+    path('logout/', auth_view.LogoutView.as_view(), name='logout'),
     # path('register/', views.register, name='register'),
     # path('password_reset/', views.password_reset, name='password_reset'),
     path('decrement_quantity/<int:item_id>/', views.decrement_quantity, name='decrement_quantity'),
     path('increment_quantity/<int:item_id>/', views.increment_quantity, name='increment_quantity'),
+    path('recipe/filter/', views.filter_recipes, name='filter_recipes'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)   

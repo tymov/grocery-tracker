@@ -1,256 +1,270 @@
 {% extends 'groceryapp/base.html' %} {% load static %} {% block body %}
 <div class="container">
-  <div class="row mt-3 align-items-center">
+  <div class="row mt-5 align-items-center">
     <div class="col">
-      <h1>Groceries</h1>
+      <h1 class="fw-bold">Groceries</h1>
     </div>
 
     <div class="col">
+      <!-- Enhanced search form with autocomplete -->
       <form action="" method="get" class="d-flex">
         <input
           type="search"
           name="item_name"
-          class="form-control me-2"
-          placeholder="Search"
+          class="form-control me-2 rounded-pill border-0"
+          placeholder="Search Items"
           aria-label="Search"
           {%
           if
-          request.GET.movie_name
+          request.GET.item_name
           %}
           value="{{ request.GET.item_name }}"
           {%
           endif
           %}
         />
-        <button type="submit" class="btn btn-outline-primary">Search</button>
+        <button type="submit" class="btn btn-primary rounded-pill">
+          <i class="fas fa-search"></i>
+        </button>
       </form>
     </div>
 
     <div class="col text-end">
-      <a href="{% url 'addItem' %}" class="btn btn-primary">Add Item</a>
+      <a href="{% url 'addItem' %}" class="btn btn-primary rounded-pill"
+        >Add Item</a
+      >
     </div>
   </div>
 
   <div class="row justify-content-center mt-4">
-    <table class="table table-striped shadow-sm">
-      <thead>
-        <tr class="shadow-sm">
-          <th class="py-3">
-            Item
-            <span
-              class="text-muted"
-              style="font-size: smaller; margin-left: 5px"
-            >
-              (Exp. Date)
-            </span>
-          </th>
-          <th class="py-3">Quantity</th>
-          <th class="py-3">Price</th>
-          <th class="py-3">Price per Unit</th>
-          <th class="py-3">Category</th>
-          <th class="py-3">Location</th>
-          <th class="py-3">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in items %}
-        <tr>
-          <td class="align-middle">
-            {{ item.name }}
-            <span
-              class="text-muted"
-              style="font-size: smaller; margin-left: 5px"
-            >
-              ({{ item.expiration_date|date:'d-m-Y' }})
-            </span>
-          </td>
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="bg-gradient-primary text-light">
+            <tr>
+              <th scope="col">Item</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Price</th>
+              <th scope="col">Price per Unit</th>
+              <th scope="col">Category</th>
+              <th scope="col">Location</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td class="align-middle py-3">{{ item.name }}</td>
+              <td class="align-middle py-3">
+                {% csrf_token %}
+                <button
+                  class="btn btn-sm btn-success p-2"
+                  onclick="incrementQuantity({{ item.id }})"
+                  title="Increase Quantity"
+                  style="width: 30px"
+                >
+                  +
+                </button>
+                <span class="mx-3" id="quantity_{{ item.id }}"
+                  >{{ item.quantity }}</span
+                >
+                <button
+                  class="btn btn-sm btn-danger p-2"
+                  onclick="decrementQuantity({{ item.id }})"
+                  title="Decrease Quantity"
+                  style="width: 30px"
+                >
+                  -
+                </button>
+              </td>
 
-          <td class="align-middle">
-            {% csrf_token %}
-            <button
-              class="btn btn-sm btn-success p-2"
-              onclick="incrementQuantity({{ item.id }})"
-              title="Increase Quantity"
-              style="width: 30px"
-            >
-              +
-            </button>
-            <span class="mx-3" id="quantity_{{ item.id }}"
-              >{{ item.quantity }}</span
-            >
-            <button
-              class="btn btn-sm btn-danger p-2"
-              onclick="decrementQuantity({{ item.id }})"
-              title="Decrease Quantity"
-              style="width: 30px"
-            >
-              -
-            </button>
-          </td>
-          <td class="align-middle">{{ item.price }}€</td>
-          <td class="align-middle">{{ item.price_per_item|floatformat:2 }}€</td>
-          <td class="align-middle">{{ item.category }}</td>
-          <td class="align-middle">{{ item.location }}</td>
-          <td class="align-middle">
-            <a href="{% url 'editItem' item.id %}" class="btn btn-primary"
-              >Edit</a
-            >
-            <a href="{% url 'deleteItem' item.id %}" class="btn btn-danger"
-              >Delete</a
-            >
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
-    {% comment %}
-    <div class="pagination d-flex justify-content-end align-items-center">
-      {% if items.has_previous %}
-      <a href="?page={{ items.previous_page_number }}" class="btn btn-primary"
-        >Previous</a
-      >
-      {% endif %}
-
-      <span class="mx-2"
-        >Page {{ items.number }} of {{ items.paginator.num_pages }}</span
-      >
-
-      {% if items.has_next %}
-      <a href="?page={{ items.next_page_number }}" class="btn btn-primary"
-        >Next</a
-      >
-      {% endif %}
-    </div>
-  </div>
-  {% endcomment %}
-
-  <div class="row">
-    <div class="row justify-content-between mt-3">
-      <div class="col-md-6">
-        <h2 class="">Expenses per Category</h2>
-        <div class="row justify-content-start">
-          <div class="col-12 mt-0">
-            <canvas id="categoryChart" width="200" height="200"></canvas>
-          </div>
-        </div>
+              <td class="align-middle py-3">€{{ item.price }}</td>
+              <td class="align-middle py-3">
+                €{{ item.price_per_item|floatformat:2 }}
+              </td>
+              <td class="align-middle py-3">{{ item.category }}</td>
+              <td class="align-middle py-3">{{ item.location }}</td>
+              <td class="align-middle py-3">
+                <a
+                  href="{% url 'editItem' item.id %}"
+                  class="btn btn-sm btn-outline-primary me-2"
+                  ><i class="fas fa-edit"></i
+                ></a>
+                <a
+                  href="{% url 'deleteItem' item.id %}"
+                  class="btn btn-sm btn-outline-danger"
+                  ><i class="fas fa-trash-alt"></i
+                ></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    // Calculate total expenses for each category
-    var categoryExpenses = {
-        {% for item in items %}
-            "{{ item.category }}": {{ item.price }},
-        {% endfor %}
-    };
-
-    // Generate the chart using the calculated data
-    var ctx = document.getElementById('categoryChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(categoryExpenses),
-            datasets: [{
-                label: '€ Spent per Category',
-                data: Object.values(categoryExpenses),
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 0, 0, 0.2)',
-                    'rgba(0, 255, 0, 0.2)',
-                    'rgba(0, 0, 255, 0.2)',
-                    'rgba(128, 0, 128, 0.2)',
-                    'rgba(255, 165, 0, 0.2)',
-                    'rgba(128, 128, 0, 0.2)',
-                    'rgba(0, 128, 128, 0.2)',
-                    'rgba(128, 0, 0, 0.2)',
-                    'rgba(0, 128, 0, 0.2)',
-                    'rgba(0, 0, 128, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 0, 0, 1)',
-                    'rgba(0, 255, 0, 1)',
-                    'rgba(0, 0, 255, 1)',
-                    'rgba(128, 0, 128, 1)',
-                    'rgba(255, 165, 0, 1)',
-                    'rgba(128, 128, 0, 1)',
-                    'rgba(0, 128, 128, 1)',
-                    'rgba(128, 0, 0, 1)',
-                    'rgba(0, 128, 0, 1)',
-                    'rgba(0, 0, 128, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    display: false  // Remove y-axis
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'left'  // Position legend on the left side
-                }
-            }
-        }
-    });
-  </script>
-
-  <script>
-    function incrementQuantity(itemId) {
-      fetch("/increment_quantity/" + itemId + "/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": "{{ csrf_token }}", // Replace {{ csrf_token }} with your actual CSRF token
-        },
-        body: JSON.stringify({}),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          var quantityElement = document.getElementById("quantity_" + itemId);
-          var priceElement = document.getElementById("price_" + itemId);
-          quantityElement.innerHTML = data.quantity;
-          priceElement.innerHTML =
-            (data.quantity * data.price).toFixed(2) + "€";
-        })
-        .catch((error) => console.error("Error:", error));
-    }
-
-    function decrementQuantity(itemId) {
-      fetch("/decrement_quantity/" + itemId + "/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": "{{ csrf_token }}", // Replace {{ csrf_token }} with your actual CSRF token
-        },
-        body: JSON.stringify({}),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          var quantityElement = document.getElementById("quantity_" + itemId);
-          var priceElement = document.getElementById("price_" + itemId);
-          quantityElement.innerHTML = data.quantity;
-          priceElement.innerHTML =
-            (data.quantity * data.price).toFixed(2) + "€";
-        })
-        .catch((error) => console.error("Error:", error));
-    }
-  </script>
-
-  {% endblock %}
+  <div class="row justify-content-center mt-4 ">
+    <div class="col-md-6">
+      <h2 class="">Expenses per Category</h2>
+      <div class="row justify-content-start">
+        <div class="col-12 mt-4">
+          <canvas id="categoryChart" width="200" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h2 class="">Expenses per Month</h2>
+      <div class="row justify-content-start">
+        <div class="col-12">
+          <canvas id="monthlyExpensesChart" width="200" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Calculate total expenses for each category
+  var categoryExpenses = {
+      {% for item in items %}
+          "{{ item.category }}": {{ item.price }},
+      {% endfor %}
+  };
+
+  // Generate the chart using the calculated data
+  var ctx = document.getElementById('categoryChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+          labels: Object.keys(categoryExpenses),
+          datasets: [{
+              label: '€ Spent per Category',
+              data: Object.values(categoryExpenses),
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(255, 0, 0, 0.2)',
+                  'rgba(0, 255, 0, 0.2)',
+                  'rgba(0, 0, 255, 0.2)',
+                  'rgba(128, 0, 128, 0.2)',
+                  'rgba(255, 165, 0, 0.2)',
+                  'rgba(128, 128, 0, 0.2)',
+                  'rgba(0, 128, 128, 0.2)',
+                  'rgba(128, 0, 0, 0.2)',
+                  'rgba(0, 128, 0, 0.2)',
+                  'rgba(0, 0, 128, 0.2)'
+              ],
+              borderColor: [
+                  'rgba(255, 99, 132, 1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)',
+                  'rgba(255, 0, 0, 1)',
+                  'rgba(0, 255, 0, 1)',
+                  'rgba(0, 0, 255, 1)',
+                  'rgba(128, 0, 128, 1)',
+                  'rgba(255, 165, 0, 1)',
+                  'rgba(128, 128, 0, 1)',
+                  'rgba(0, 128, 128, 1)',
+                  'rgba(128, 0, 0, 1)',
+                  'rgba(0, 128, 0, 1)',
+                  'rgba(0, 0, 128, 1)'
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+          scales: {
+              y: {
+                  display: false  // Remove y-axis
+              }
+          },
+          plugins: {
+              legend: {
+                  position: 'bottom'  // Position legend on the left side
+              }
+          }
+      }
+  });
+
+  // Calculate total expenses per month
+  var monthlyExpensesData = {
+      // You need to populate this data with your actual monthly expenses
+      "January": 200,
+      "February": 350,
+      "March": 280,
+      // Add more months as needed
+  };
+
+  // Generate the line chart for monthly expenses
+  var monthlyCtx = document.getElementById('monthlyExpensesChart').getContext('2d');
+  var monthlyChart = new Chart(monthlyCtx, {
+      type: 'line',
+      data: {
+          labels: Object.keys(monthlyExpensesData),
+          datasets: [{
+              label: '€ Spent per Month',
+              data: Object.values(monthlyExpensesData),
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+          }]
+      },
+      options: {
+          scales: {
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+</script>
+
+<script>
+  function incrementQuantity(itemId) {
+    fetch("/increment_quantity/" + itemId + "/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}", // Replace {{ csrf_token }} with your actual CSRF token
+      },
+      body: JSON.stringify({}),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        var quantityElement = document.getElementById("quantity_" + itemId);
+        var priceElement = document.getElementById("price_" + itemId);
+        quantityElement.innerHTML = data.quantity;
+        priceElement.innerHTML = (data.quantity * data.price).toFixed(2) + "€";
+      })
+      .catch((error) => console.error("Error:", error));
+  }
+
+  function decrementQuantity(itemId) {
+    fetch("/decrement_quantity/" + itemId + "/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}", // Replace {{ csrf_token }} with your actual CSRF token
+      },
+      body: JSON.stringify({}),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        var quantityElement = document.getElementById("quantity_" + itemId);
+        var priceElement = document.getElementById("price_" + itemId);
+        quantityElement.innerHTML = data.quantity;
+        priceElement.innerHTML = (data.quantity * data.price).toFixed(2) + "€";
+      })
+      .catch((error) => console.error("Error:", error));
+  }
+</script>
+{% endblock %}
