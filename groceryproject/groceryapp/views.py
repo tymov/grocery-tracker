@@ -107,7 +107,7 @@ def addRecipe(request):
         if form.is_valid():
             # Associate the logged-in user with the recipe
             recipe = form.save(commit=False)
-            recipe.creator = request.user
+            recipe.owner = request.user
             recipe.save()
             return redirect('recipes')
     else:

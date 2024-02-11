@@ -64,7 +64,12 @@
           <img src="{{recipe.image}}" />
         </aside>
         <article>
-          <h2>{{ recipe.name }}</h2>
+          <h2 class="d-flex justify-content-between align-items-center">
+            <span>{{ recipe.name }}</span>
+            <span class="text-end text-muted text-capitalize" style="font-size: 18px">{{ recipe.owner }}</span>
+        </h2>
+        
+          
           <div>
             <h3 class="mt-2">{{ recipe.mealtype }}</h3>
             <h3 class="mt-2">{{ recipe.cuisine }}</h3>

@@ -38,7 +38,7 @@ class GroceryItemForm(forms.ModelForm):
         }
 
 # Create a form for the Recipe model
-class RecipeForm(forms.ModelForm):
+class RecipeForm(forms.ModelForm):  
     class Meta:
         model = Recipe
         fields = ['name', 'description', 'image', 'mealtype', 'time', 'portions', 'instructions', 'cuisine']
