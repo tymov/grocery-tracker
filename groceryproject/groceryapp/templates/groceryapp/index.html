@@ -1,41 +1,31 @@
-{% extends 'groceryapp/base.html' %} {% load static %} {% block body %}
+{% extends 'groceryapp/base.html' %}
+{% load static %}
+
+{% block body %}
 <div class="container">
-  <main
-    class="position-relative d-flex align-items-center justify-content-center min-vh-100"
-  >
+ <main class="position-relative d-flex align-items-center justify-content-center min-vh-100">
     <section class="w-full py-6 md:py-10">
       <div class="container px-4 md:px-6">
         <div class="row align-items-center">
           <!-- Title and Text Column -->
           <div class="col-md-6">
             <div class="space-y-3">
-              <h1
-                class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl py-3"
-              >
-                Delicious Recipes at Your Fingertips
+              <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight">
+                Discover Delicious Recipes
               </h1>
-              <p
-                class="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400"
-              >
-                Explore a world of flavor with our curated collection of
-                recipes. From quick & easy weeknight dinners to show-stopping
-                desserts, we've got you covered.
+              <p class="text-lg md:text-xl text-gray-600">
+                Explore a world of flavor with our curated collection of recipes. From quick & easy weeknight dinners to show-stopping desserts, we've got you covered.
               </p>
+              <a href="#" class="bg-gradient-to-r from-green-400 to-blue-500 hover:bg-green-500 text-white px-6 py-3 rounded-full shadow-md inline-block mt-4 transition duration-300">Get Started</a>
             </div>
           </div>
           <!-- Image Column -->
           <div class="col-md-6">
-            <img
-              class="mx-auto rounded-xl object-center"
-              src="https://www.allrecipes.com/thmb/xvlRRhK5ldXuGcXad8XDM5tTAfE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/223382_chicken-stir-fry_Rita-1x1-1-b6b835ccfc714bb6a8391a7c47a06a84.jpg"
-              
-            />
+            <img class="mx-auto rounded-xl object-cover" src="https://hips.hearstapps.com/hmg-prod/images/chicken-stir-fry-index-65130392700bf.jpg?crop=0.6664461351857978xw:1xh;center,top&resize=1200:*" alt="Delicious Recipes">
           </div>
         </div>
       </div>
     </section>
-  </main>
-
-
+ </main>
 </div>
 {% endblock %}

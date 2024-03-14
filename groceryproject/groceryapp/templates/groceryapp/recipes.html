@@ -1,11 +1,9 @@
-{% extends 'groceryapp/base.html' %} 
-{% load static %} 
-{% block body %}
+{% extends 'groceryapp/base.html' %} {% load static %} {% block body %}
 
 <div class="container">
   <div class="row mt-5 align-items-center">
+    <!-- Search Form -->
     <div class="col-md-5 pr-3">
-      <!-- Enhanced search form with autocomplete -->
       <form action="" method="get" class="d-flex">
         <input
           type="search"
@@ -29,87 +27,132 @@
       </form>
     </div>
 
-    <div class="col-md-5">
-      <!-- Filter form with visual feedback -->
-      <form action="{% url 'filter_recipes' %}" method="post" class="d-inline" id="filterForm">
+    <!-- Clear Filter Button -->
+    <div class="col-md">
+      <form
+        action="{% url 'clear_filter' %}"
+        method="post"
+        class="d-inline"
+        id="clearFilterForm"
+      >
         {% csrf_token %}
-        <button type="submit" class="btn bg-rose-outline rounded-pill btn" id="filterBtn">
+        <button
+          type="submit"
+          class="btn bg-rose-outline rounded-pill btn"
+          id="clearFilterBtn"
+        >
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </form>
+    </div>
+
+    <!-- Filter Button -->
+    <div class="col-md-2">
+      <form
+        action="{% url 'filter_private_recipes' %}"
+        method="post"
+        class="d-inline"
+        id="filterForm"
+      >
+        {% csrf_token %}
+        <button
+          type="submit"
+          class="btn bg-rose-outline rounded-pill btn"
+          id="filterBtn"
+        >
           <i class="fas fa-sort"></i> Ingredients
         </button>
       </form>
     </div>
 
+    <!-- Add Recipe Button -->
     <div class="col-md-2 text-end">
-      <a href="{% url 'addRecipe' %}" class="btn bg-rose text-white rounded-pill">+ Add Recipe</a>
+      <a
+        href="{% url 'addRecipe' %}"
+        class="btn bg-rose text-white rounded-pill"
+        >+ Add Recipe</a
+      >
     </div>
   </div>
 
   <div
     class="row row-cols-1 row-cols-md-3 mt-2 gap-4 container-fluid justify-content-center"
   >
-    {% if recipes %}
-      {% for recipe in recipes %}
-        <div class="recipe-card col shadow">
-          <a
-            href="{% url 'recipe_detail' recipe.id %}"
-            class="text-decoration-none"
-          >
-            <aside>
-              <img src="{{recipe.image}}" />
-            </aside>
-            <article>
-              <h2 class="d-flex justify-content-between align-items-center">
-                <span>{{ recipe.name }}</span>
-                <span
-                  class="text-end text-muted text-capitalize"
-                  style="font-size: 18px"
-                  >{{ recipe.owner }}</span
-                >
-              </h2>
+    {% if recipes %} {% for recipe in recipes %}
+    <div class="recipe-card col shadow">
+      <a
+        href="{% url 'recipe_detail' recipe.id %}"
+        class="text-decoration-none"
+      >
+        <aside>
+          <img src="{{recipe.image}}" />
+        </aside>
+        <article>
+          <h2 class="d-flex justify-content-between align-items-center">
+            <span>{{ recipe.name }}</span>
+            <span
+              class="text-end text-muted text-capitalize"
+              style="font-size: 18px"
+              >{{ recipe.owner }}</span
+            >
+          </h2>
 
-              <div>
-                <h3 class="mt-2">{{ recipe.mealtype }}</h3>
-                <h3 class="mt-2">{{ recipe.cuisine }}</h3>
-              </div>
-              <ul class="py-2">
-                <li>
-                  <i class="fas fa-user" style="color: #E43359"></i>
-                  <!-- Darker color from gradient for portions icon -->
-                  <span style="color: #E43359">{{ recipe.portions }}</span>
-                  <!-- Darker color from gradient for portions span -->
-                </li>
-                <li>
-                  <i class="fas fa-clock" style="color: #E43359"></i>
-                  <!-- Darker color from gradient for time icon -->
-                  <span style="color: #E43359">{{ recipe.time }}</span>
-                  <!-- Darker color from gradient for time span -->
-                </li>
-                <li>
-                  <i class="fas fa-list" style="color: #E43359"></i>
-                  <!-- Darker color from gradient for ingredient count icon -->
-                  <span style="color: #E43359">{{ recipe.ingredients.count }}</span>
-                  <!-- Darker color from gradient for ingredient count span -->
-                </li>
-              </ul>
-              <p>{{ recipe.description }}</p>
-            </article>
-          </a>
-        </div>
-      {% endfor %}
-    {% else %}
-      <div class="col p-5 bg-rose text-white rounded mt-5 text-center">
-        <p>No recipes available with the current ingredients. <br>You should go to the store.</p>
-      </div>
+          <div>
+            <h3 class="mt-2">{{ recipe.mealtype }}</h3>
+            <h3 class="mt-2">{{ recipe.cuisine }}</h3>
+          </div>
+          <ul class="py-2">
+            <li>
+              <i class="fas fa-user" style="color: #e43359"></i>
+              <!-- Darker color from gradient for portions icon -->
+              <span style="color: #e43359">{{ recipe.portions }}</span>
+              <!-- Darker color from gradient for portions span -->
+            </li>
+            <li>
+              <i class="fas fa-clock" style="color: #e43359"></i>
+              <!-- Darker color from gradient for time icon -->
+              <span style="color: #e43359">{{ recipe.time }}</span>
+              <!-- Darker color from gradient for time span -->
+            </li>
+            <li>
+              <i class="fas fa-list" style="color: #e43359"></i>
+              <!-- Darker color from gradient for ingredient count icon -->
+              <span style="color: #e43359">{{ recipe.ingredients.count }}</span>
+              <!-- Darker color from gradient for ingredient count span -->
+            </li>
+          </ul>
+          <p>{{ recipe.description }}</p>
+        </article>
+      </a>
+    </div>
+    {% endfor %} {% else %}
+    <div class="col p-5 bg-rose text-white rounded mt-5 text-center">
+      <p>
+        No recipes available with the current ingredients. <br />You should go
+        to the store.
+      </p>
+    </div>
     {% endif %}
   </div>
 </div>
 
 <!-- Spinner container -->
-{% comment %} <div class="spinner-container d-flex justify-content-center align-items-center" id="spinnerContainer" style="position: fixed; top: 0; bottom: 0; left: 0; right: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+{% comment %}
+<div
+  class="spinner-container d-flex justify-content-center align-items-center"
+  id="spinnerContainer"
+  style="
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+  "
+>
   <div class="spinner-border text-rose" role="status">
     <span class="visually-hidden">Loading...</span>
   </div>
-</div> {% endcomment %}
-
-
-{% endblock %}
+</div>
+{% endcomment %} {% endblock %}

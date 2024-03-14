@@ -305,3 +305,15 @@ def filter_recipes(request):
     recipes = Recipe.objects.filter(name__in=recipes_list)
 
     return render(request, "groceryapp/recipes.html", {"recipes": recipes})
+
+@login_required
+def clear_filter(request):
+    return redirect("recipes")
+
+@login_required
+def filter_private_recipes(request):
+    # Get the user's private recipes
+    recipes = Recipe.objects.filter(owner=request.user, public=False)
+    return render(request, "groceryapp/recipes.html", {"recipes": recipes})
+
+    

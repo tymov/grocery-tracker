@@ -43,4 +43,6 @@ urlpatterns = [
     path('decrement_quantity/<int:item_id>/', views.decrement_quantity, name='decrement_quantity'),
     path('increment_quantity/<int:item_id>/', views.increment_quantity, name='increment_quantity'),
     path('recipe/filter/', views.filter_recipes, name='filter_recipes'),
+    path('recipes', views.clear_filter, name='clear_filter'),
+    path('recipes/private/', views.filter_private_recipes, name='filter_private_recipes'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)   

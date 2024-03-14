@@ -1,52 +1,6 @@
 {% extends 'groceryapp/base.html' %} {% load static %} {% block body %}
-<div class="container pb-3">
-  <div class="row mt-5">
-    <!-- KPI Card 2 (Expenses this month) -->
-    <div class="col-md-4">
-      <div class="card h-100">
-        <div
-          class="card-body py-4 px-3 d-flex flex-column justify-content-between"
-        >
-          <h5 class="card-title">Expenses this month</h5>
-          <p>
-            Last Month: <span id="expensesLastMonth"></span>
-            <span id="indicatorLastMonth"></span>
-          </p>
-          <h3 class="card-text" id="expensesThisMonth"></h3>
-        </div>
-      </div>
-    </div>
-
-    <!-- KPI Card 3 (Expenses this week) -->
-    <div class="col-md-4">
-      <div class="card h-100">
-        <div
-          class="card-body py-4 px-3 d-flex flex-column justify-content-between"
-        >
-          <h5 class="card-title">Expenses this week</h5>
-          <p>
-            Last Week: <span id="expensesLastWeek"></span>
-            <span id="indicatorLastWeek"></span>
-          </p>
-          <h3 class="card-text" id="expensesThisWeek"></h3>
-        </div>
-      </div>
-    </div>
-
-    <!-- KPI Card 1 (Total Items) -->
-    <div class="col-md-4">
-      <div class="card h-100">
-        <div
-          class="card-body py-4 px-3 d-flex flex-column justify-content-between"
-        >
-          <h5 class="card-title">Total Items</h5>
-          <h3 class="card-text">{{ items|length }}</h3>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row mt-3">
+<div class="container pb-3" id="app">
+  <div class="row mt-4">
     <div class="col-md-6">
       <form action="" method="get" class="mb-3">
         <div class="input-group">
@@ -83,11 +37,59 @@
         </a>
       </div>
     </div>
+  </div>
 
+  <div class="row mt-3">
+    <!-- KPI Card 2 (Expenses this month) -->
+    <div class="col-md-4 fade-up">
+      <div class="card h-100">
+        <div
+          class="card-body py-4 px-3 d-flex flex-column justify-content-between"
+        >
+          <h5 class="card-title">Expenses this month</h5>
+          <p>
+            Last Month: <span id="expensesLastMonth"></span>
+            <span id="indicatorLastMonth"></span>
+          </p>
+          <h3 class="card-text" id="expensesThisMonth"></h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Card 3 (Expenses this week) -->
+    <div class="col-md-4 fade-up">
+      <div class="card h-100">
+        <div
+          class="card-body py-4 px-3 d-flex flex-column justify-content-between"
+        >
+          <h5 class="card-title">Expenses this week</h5>
+          <p>
+            Last Week: <span id="expensesLastWeek"></span>
+            <span id="indicatorLastWeek"></span>
+          </p>
+          <h3 class="card-text" id="expensesThisWeek"></h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Card 1 (Total Items) -->
+    <div class="col-md-4 fade-up">
+      <div class="card h-100">
+        <div
+          class="card-body py-4 px-3 d-flex flex-column justify-content-between"
+        >
+          <h5 class="card-title">Total Items</h5>
+          <h3 class="card-text">{{ items|length }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-3">
     <div class="row mt-2">
       <div class="col-md-6">
         <!-- Item List -->
-        <div class="card">
+        <div class="card fade-left">
           <div class="card-header bg-gradient-primary text-dark py-3">
             <h5 class="mb-0">Grocery Items</h5>
           </div>
@@ -159,7 +161,7 @@
 
       <div class="col-md-6">
         <!-- Expense Summary -->
-        <div class="card">
+        <div class="card fade-right">
           <div class="card-header bg-gradient-primary text-dark py-3">
             <h5 class="mb-0">Expense Summary</h5>
           </div>
@@ -175,7 +177,7 @@
         </div>
 
         <!-- Charts Section -->
-        <div class="card mt-3">
+        <div class="card mt-3 fade-right">
           <div class="card-header bg-gradient-primary text-dark py-3">
             <h5 class="mb-0">Expenses Over Time</h5>
           </div>
@@ -261,6 +263,10 @@
     });
   </script>
 
+  <script src="{% static 'groceryapp/groceryAddRemove.js' %}"></script>
+
+  <script src="{% static 'groceryapp/exportPDF.js' %}"></script>
+
   <script>
     var monthlyChart; // Declare monthlyChart in the global scope
 
@@ -342,83 +348,6 @@
   </script>
 
   <script>
-    function incrementQuantity(itemId) {
-      fetch("/increment_quantity/" + itemId + "/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": "{{ csrf_token }}", // Replace {{ csrf_token }} with your actual CSRF token
-        },
-        body: JSON.stringify({}),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          var quantityElement = document.getElementById("quantity_" + itemId);
-          var priceElement = document.getElementById("price_" + itemId);
-          quantityElement.innerHTML = data.quantity;
-          priceElement.innerHTML =
-            (data.quantity * data.price).toFixed(2) + "€";
-        })
-        .catch((error) => console.error("Error:", error));
-    }
-
-    function decrementQuantity(itemId) {
-      fetch("/decrement_quantity/" + itemId + "/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": "{{ csrf_token }}", // Replace {{ csrf_token }} with your actual CSRF token
-        },
-        body: JSON.stringify({}),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          var quantityElement = document.getElementById("quantity_" + itemId);
-          var priceElement = document.getElementById("price_" + itemId);
-          quantityElement.innerHTML = data.quantity;
-          priceElement.innerHTML =
-            (data.quantity * data.price).toFixed(2) + "€";
-        })
-        .catch((error) => console.error("Error:", error));
-    }
-  </script>
-
-  <script>
-    function exportToPDF() {
-      var doc = new jsPDF();
-
-      // Add title
-      doc.setFontSize(20);
-      doc.text("Grocery Tracking Summary", 15, 15);
-
-      // Add grocery items table
-      var groceriesTable = document.getElementById("groceriesTable");
-      doc.autoTable({ html: groceriesTable });
-
-      // Add expense summary
-      var expenseSummary = document.getElementById("expenseSummary").innerText;
-      doc.setFontSize(14);
-      doc.text(15, doc.lastAutoTable.finalY + 10, "Expense Summary:");
-      doc.text(15, doc.lastAutoTable.finalY + 20, expenseSummary);
-
-      // Add category chart
-      var categoryChartCanvas = document.getElementById("categoryChart");
-      var categoryChartImg = categoryChartCanvas.toDataURL("image/png");
-      doc.addImage(
-        categoryChartImg,
-        "PNG",
-        15,
-        doc.lastAutoTable.finalY + 40,
-        180,
-        100
-      );
-
-      // Save the PDF
-      doc.save("grocery_summary.pdf");
-    }
-  </script>
-
-  <script>
     // Get the current date
     var today = new Date();
 
@@ -493,5 +422,6 @@
     }
   </script>
 
+  <script src="{% static 'groceryapp/animations.js' %}"></script>
   {% endblock %}
 </div>

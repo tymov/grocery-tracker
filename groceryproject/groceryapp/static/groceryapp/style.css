@@ -11,6 +11,7 @@
     --green-900: #294225;
     --green-950: #122310;
     --white: #fff;
+    --gray-25: #FCFCFF;
     --gray-50: #F5F7FF;
 }
 
@@ -51,7 +52,7 @@ body {
 }
 
 .bg-rose-gradient {
-    background: linear-gradient(90deg, var(--white) 50%, var(--white) 100%);
+    background: linear-gradient(90deg, var(--gray) 50%, var(--gray) 100%);
     transition: background 0.3s ease;
 }
 
@@ -417,6 +418,7 @@ img {
 }
 
 @media screen and (min-width: 576px) {
+    /* Fade animations */
     .fade-up,
     .fade-left,
     .fade-right {
@@ -440,6 +442,59 @@ img {
     }
     .fade-up {
         transform: translateY(20%);
+        transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+    }
+    /* Staggered animations using nth-child */
+    .fade-up:nth-child(1) {
+        transition-delay: 0.10s;
+        /* Adjust the delay for the first card */
+    }
+    .fade-up:nth-child(2) {
+        transition-delay: 0.20s;
+        /* Adjust the delay for the second card */
+    }
+    .fade-up:nth-child(3) {
+        transition-delay: 0.30s;
+        /* Adjust the delay for the third card */
+    }
+    .fade-right:nth-child(1) {
+        transition-delay: 0.20s;
+        /* Adjust the delay for the fourth card */
+    }
+    .fade-right:nth-child(2) {
+        transition-delay: 0.30s;
+        /* Adjust the delay for the fifth card */
+    }
+    /* Slide animations */
+    .slide-up,
+    .slide-down,
+    .slide-right,
+    .slide-left {
+        opacity: 0;
+        visibility: hidden;
+    }
+    .slide-up.animate {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+        transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+    }
+    .slide-down.animate {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+        transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+    }
+    .slide-right.animate {
+        opacity: 1;
+        transform: translateX(0);
+        visibility: visible;
+        transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+    }
+    .slide-left.animate {
+        opacity: 1;
+        transform: translateX(0);
+        visibility: visible;
         transition: transform 1s ease-in-out, opacity 1s ease-in-out;
     }
 }

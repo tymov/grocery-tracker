@@ -53,7 +53,7 @@ class GroceryItemForm(forms.ModelForm):
 class RecipeForm(forms.ModelForm):  
     class Meta:
         model = Recipe
-        fields = ['name', 'description', 'image', 'mealtype', 'time', 'portions', 'instructions', 'cuisine']
+        fields = ['name', 'description', 'image', 'mealtype', 'time', 'portions', 'instructions', 'cuisine', 'public']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
@@ -63,6 +63,7 @@ class RecipeForm(forms.ModelForm):
             'portions': forms.NumberInput(attrs={'class': 'form-control'}),
             'instructions': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
             'cuisine': forms.TextInput(attrs={'class': 'form-control'}),
+            'public': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
         
 # Create a form for the RecipeIngredient model

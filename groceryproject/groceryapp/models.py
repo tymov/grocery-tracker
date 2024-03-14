@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -43,6 +44,7 @@ class Recipe(models.Model):
     instructions = models.TextField(null=True)
     cuisine = models.CharField(max_length=100, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    public = models.BooleanField(default=True)
 
     def get_absolute_url(self):
         return reverse('recipe_detail', args=[str(self.id)])

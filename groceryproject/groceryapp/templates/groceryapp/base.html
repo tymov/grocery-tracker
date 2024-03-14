@@ -46,7 +46,10 @@
     <nav class="navbar navbar-expand-lg navbar-light shadow-sm py-3">
       <div class="container-fluid navbar-container">
         <a class="navbar-brand" href="{% url 'index' %}">
-          <img src="{% static 'groceryapp/black-no-bg.svg' %}" class="navbar-logo">
+          <img
+            src="{% static 'groceryapp/black-no-bg.svg' %}"
+            class="navbar-logo"
+          />
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav d-md-none d-sm-auto">
@@ -74,7 +77,10 @@
             <!-- Logout icon -->
             <li class="nav-item">
               <a class="nav-link" href="{% url 'logout' %}">
-                <i class="fas fa-sign-out-alt mx-2" style="transform: scale(1.2);"></i>
+                <i
+                  class="fas fa-sign-out-alt mx-2"
+                  style="transform: scale(1.2)"
+                ></i>
               </a>
             </li>
             {% else %}
@@ -83,7 +89,9 @@
             </li>
 
             <li class="nav-item mx-2">
-              <a class="nav-link text-white" href="{% url 'register' %}">Register</a>
+              <a class="nav-link text-white" href="{% url 'register' %}"
+                >Register</a
+              >
             </li>
             {% endif %}
           </ul>
@@ -105,10 +113,14 @@
     <div class="container-fluid">
       <div class="row">
         <!-- Side Navigation (Sidenav) -->
-        <div class="col-md-2 bg-rose-gradient text-white d-none hidden d-md-block">
+        {% if request.user.is_authenticated %}
+        <div
+          class="col-md-2 text-white d-none hidden d-md-block"
+          style="position: sticky; top: 0; left: 0; height: 100%; background-color: var(--white);"
+        >
           <!-- Hidden on sm and below -->
           <div class="py-4">
-            <ul class="navbar-nav sidenav d-none d-md-block">
+            <ul class="navbar-nav sidenav">
               {% if request.user.is_authenticated %}
               <li class="nav-item mx-3 my-2">
                 <a class="nav-link" href="{% url 'index' %}">Home</a>
@@ -125,6 +137,7 @@
             </ul>
           </div>
         </div>
+        {% endif %}
 
         <!-- Main Content Area -->
         <div class="col-md-10">
@@ -134,5 +147,7 @@
         </div>
       </div>
     </div>
+
+    <script src="{% static 'groceryapp/animations.js' %}"></script>
   </body>
 </html>
