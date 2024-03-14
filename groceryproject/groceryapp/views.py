@@ -10,6 +10,9 @@ from django.db.models import Count, Subquery, OuterRef
 from django.db.models import Q
 from django.db import connection
 import re
+from django.db.models import Sum
+from django.utils import timezone
+
 
 # Login / Logout / Register / Password Reset
 def user_login(request):
@@ -18,56 +21,107 @@ def user_login(request):
         if form.is_valid():
             data = form.cleaned_data
             user = authenticate(
-                request, username=data['username'], password=data['password'])
+                request, username=data["username"], password=data["password"]
+            )
             if user is not None:
                 login(request, user)
-                return redirect('items')
+                return redirect("items")
             else:
-                return HttpResponse('Invalid credentials')
+                return HttpResponse("Invalid credentials")
 
     else:
         form = LoginForm()
-    return render(request, 'groceryapp/login.html', {'form': form})
+    return render(request, "groceryapp/login.html", {"form": form})
 
+def register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            user = User.objects.create_user(
+                username=data["username"], email=data["email"], password=data["password"]
+            )
+            login(request, user)
+            return redirect("items")
+    else:
+        form = RegisterForm()
+    return render(request, "groceryapp/register.html", {"form": form})
 
 # Create your views here.
 @login_required
-def index(request):    
+def index(request):
     # get recipes
     recipes = Recipe.objects.all()
-    
+
     # feature recipes (5 random recipes)
-    feature_recipes1 = Recipe.objects.order_by('?')[:4]
-    feature_recipes2 = Recipe.objects.order_by('?')[:4]
-    feature_recipes3 = Recipe.objects.order_by('?')[:4]
-    
-    return render(request, 'groceryapp/index.html', {'feature_recipes1': feature_recipes1, 'feature_recipes2': feature_recipes2, 'feature_recipes3': feature_recipes3, 'recipes': recipes})
+    feature_recipes1 = Recipe.objects.order_by("?")[:4]
+    feature_recipes2 = Recipe.objects.order_by("?")[:4]
+    feature_recipes3 = Recipe.objects.order_by("?")[:4]
+
+    return render(
+        request,
+        "groceryapp/index.html",
+        {
+            "feature_recipes1": feature_recipes1,
+            "feature_recipes2": feature_recipes2,
+            "feature_recipes3": feature_recipes3,
+            "recipes": recipes,
+        },
+    )
+
 
 @login_required
 def items(request):
     # Filter items based on the currently logged-in user
     items = GroceryItem.objects.filter(owner=request.user)
     categories = Category.objects.all()
-    
-    item_name = request.GET.get('item_name')
+
+    item_name = request.GET.get("item_name")
     if item_name:
         items = items.filter(name__icontains=item_name)
-        
-    return render(request, 'groceryapp/items.html', {'items': items, 'categories': categories})
+
+    # Calculate monthly expenses
+    today = timezone.now().date()
+    first_day_of_this_month = today.replace(day=1)
+    last_day_of_last_month = first_day_of_this_month - timezone.timedelta(days=1)
+    
+    monthly_expenses = (
+    GroceryItem.objects.filter(
+        owner=request.user, date_bought__gte=last_day_of_last_month, date_bought__lte=first_day_of_this_month
+    )
+        .values("date_bought__month")
+        .order_by("date_bought__month")
+    )
+
+    
+    # Prepare the data for the chart
+    months = [item["date_bought__month"] for item in monthly_expenses]
+    totals = [item["total_spent"] for item in monthly_expenses]
+
+    context = {
+        "items": items,
+        "categories": categories,
+        "months": months,
+        "totals": totals,
+    }
+
+    return render(request, "groceryapp/items.html", context)
+
 
 @login_required
 def recipes(request):
     recipes = Recipe.objects.all()
-    
-    recipe_name = request.GET.get('recipe_name', '')
+
+    recipe_name = request.GET.get("recipe_name", "")
     if recipe_name:
         recipes = recipes.filter(name__icontains=recipe_name)
-        
-    # Get distinct cuisine values from the Recipe model
-    cuisines = Recipe.objects.values_list('cuisine', flat=True).distinct()
-    
-    return render(request, 'groceryapp/recipes.html', {'recipes': recipes, 'cuisines': cuisines})
 
+    # Get distinct cuisine values from the Recipe model
+    cuisines = Recipe.objects.values_list("cuisine", flat=True).distinct()
+
+    return render(
+        request, "groceryapp/recipes.html", {"recipes": recipes, "cuisines": cuisines}
+    )
 
 
 @login_required
@@ -77,15 +131,20 @@ def recipe_detail(request, id):
     recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
 
     # Format the instructions string by inserting a newline character after each number followed by a period
-    formatted_instructions = re.sub(r'(\d+\.)', r'\1\n', recipe.instructions)
+    formatted_instructions = re.sub(r"(\d+\.)", r"\1\n", recipe.instructions)
 
     # Pass the formatted instructions to the template
-    return render(request, 'groceryapp/recipe_detail.html', {
-        'recipe': recipe,
-        'recipe_ingredients': recipe_ingredients,
-        'formatted_instructions': formatted_instructions
-    })
-    
+    return render(
+        request,
+        "groceryapp/recipe_detail.html",
+        {
+            "recipe": recipe,
+            "recipe_ingredients": recipe_ingredients,
+            "formatted_instructions": formatted_instructions,
+        },
+    )
+
+
 @login_required
 def addItem(request):
     if request.method == "POST":
@@ -95,10 +154,11 @@ def addItem(request):
             item = form.save(commit=False)
             item.owner = request.user
             item.save()
-            return redirect('items')
+            return redirect("items")
     else:
         form = GroceryItemForm()
-    return render(request, 'groceryapp/addItem.html', {'form': form})
+    return render(request, "groceryapp/addItem.html", {"form": form})
+
 
 @login_required
 def addRecipe(request):
@@ -109,10 +169,11 @@ def addRecipe(request):
             recipe = form.save(commit=False)
             recipe.owner = request.user
             recipe.save()
-            return redirect('recipes')
+            return redirect("recipes")
     else:
         form = RecipeForm()
-    return render(request, 'groceryapp/addRecipe.html', {'form': form})
+    return render(request, "groceryapp/addRecipe.html", {"form": form})
+
 
 @login_required
 def editItem(request, id):
@@ -121,10 +182,11 @@ def editItem(request, id):
         form = GroceryItemForm(request.POST, instance=item)
         if form.is_valid():
             form.save()
-            return redirect('items')
+            return redirect("items")
     else:
         form = GroceryItemForm(instance=item)
-    return render(request, 'groceryapp/editItem.html', {'form': form, 'item': item})
+    return render(request, "groceryapp/editItem.html", {"form": form, "item": item})
+
 
 @login_required
 def editRecipe(request, id):
@@ -133,29 +195,33 @@ def editRecipe(request, id):
         form = RecipeForm(request.POST, instance=recipe)
         if form.is_valid():
             form.save()
-            return redirect('recipes')
+            return redirect("recipes")
     else:
         form = RecipeForm(instance=recipe)
-    return render(request, 'groceryapp/editRecipe.html', {'form': form})
+    return render(request, "groceryapp/editRecipe.html", {"form": form})
+
 
 @login_required
 def deleteItem(request, id):
     item = get_object_or_404(GroceryItem, id=id, owner=request.user)
     item.delete()
-    return redirect('items')
+    return redirect("items")
+
 
 @login_required
 def deleteRecipe(request, id):
     recipe = Recipe.objects.get(id=id)
     recipe.delete()
-    return redirect('recipes')
+    return redirect("recipes")
+
 
 @login_required
 def increment_quantity(request, item_id):
     item = get_object_or_404(GroceryItem, pk=item_id)
     item.quantity += 1
     item.save()
-    return JsonResponse({'quantity': item.quantity})
+    return JsonResponse({"quantity": item.quantity})
+
 
 @login_required
 def decrement_quantity(request, item_id):
@@ -163,37 +229,63 @@ def decrement_quantity(request, item_id):
     if item.quantity > 0:
         item.quantity -= 1
         item.save()
-    return JsonResponse({'quantity': item.quantity})
+    return JsonResponse({"quantity": item.quantity})
+
 
 @login_required
 def addIngredients(request, id):
     # Ensure the recipe exists and the user is the owner
     recipe = get_object_or_404(Recipe, id=id, owner=request.user)
-    IngredientFormSet = formset_factory(RecipeIngredientForm, extra=10)  # Change 'extra' to  10
-    
+    IngredientFormSet = formset_factory(
+        RecipeIngredientForm, extra=10
+    )  # Change 'extra' to  10
+
     if request.method == "POST":
-        formset = IngredientFormSet(request.POST, prefix='ingredients')
+        formset = IngredientFormSet(request.POST, prefix="ingredients")
         if formset.is_valid():
             for form in formset:
-                if form.has_changed() and all([field.value() is not None for field in form]):
+                if form.has_changed() and all(
+                    [field.value() is not None for field in form]
+                ):
                     instance = form.save(commit=False)
                     instance.recipe = recipe
                     instance.save()
-            return redirect('recipes')
+            return redirect("recipes")
     else:
-        formset = IngredientFormSet(prefix='ingredients')
+        formset = IngredientFormSet(prefix="ingredients")
+
+    return render(
+        request,
+        "groceryapp/addIngredients.html",
+        {"formset": formset, "recipe": recipe},
+    )
     
-    return render(request, 'groceryapp/addIngredients.html', {'formset': formset, 'recipe': recipe})
+@login_required
+def editIngredient(request, id):
+    ingredient = RecipeIngredient.objects.get(id=id)
+    if request.method == "POST":
+        form = RecipeIngredientForm(request.POST, instance=ingredient)
+        if form.is_valid():
+            form.save()
+            return redirect('recipe_detail', id=ingredient.recipe.id)
+    else:
+        form = RecipeIngredientForm(instance=ingredient)
+    return render(request, "groceryapp/editRecipe.html", {"form": form})
 
 @login_required
 def filter_recipes(request):
     # Get the user's grocery items names and convert to lowercase
-    items = [item.lower() for item in GroceryItem.objects.filter(owner=request.user).values_list('name', flat=True)]
+    items = [
+        item.lower()
+        for item in GroceryItem.objects.filter(owner=request.user).values_list(
+            "name", flat=True
+        )
+    ]
 
     # Get all the recipes and their ingredients
     recipes = Recipe.objects.all()
     recipe_ingredients = RecipeIngredient.objects.all()
-    
+
     # Create a dictionary to store the recipes that can be made with the user's grocery items
     recipes_dict = {}
     for recipe in recipes:
@@ -202,14 +294,14 @@ def filter_recipes(request):
             if ingredient.recipe == recipe:
                 # Convert the ingredient name to lowercase for comparison
                 recipes_dict[recipe.name].append(ingredient.ingredient.name.lower())
-                
+
     # Create a list of recipes that can be made with the user's grocery items
     recipes_list = []
     for recipe, ingredients in recipes_dict.items():
         if all(ingredient in items for ingredient in ingredients):
             recipes_list.append(recipe)
-            
+
     # Get the recipes that can be made with the user's grocery items
     recipes = Recipe.objects.filter(name__in=recipes_list)
-    
-    return render(request, 'groceryapp/recipes.html', {'recipes': recipes})
+
+    return render(request, "groceryapp/recipes.html", {"recipes": recipes})

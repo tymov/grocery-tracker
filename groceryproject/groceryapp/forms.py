@@ -8,6 +8,18 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
     
 
+class RegisterForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm password', widget=forms.PasswordInput)
+    
+    def clean_password2(self):
+        if self.cleaned_data['password'] != self.cleaned_data['password2']:
+            raise forms.ValidationError('Passwords do not match')
+        return self.cleaned_data['password2']
+    
+
 class UserRegistartionForm(forms.ModelForm):
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(

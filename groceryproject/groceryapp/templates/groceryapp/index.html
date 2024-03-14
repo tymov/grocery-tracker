@@ -1,67 +1,41 @@
 {% extends 'groceryapp/base.html' %} {% load static %} {% block body %}
-<div class="container py-5">
-  <h1 class="text-center mb-4">Welcome to the Grocery App!</h1>
-  <p class="text-center mb-4">
-    Manage your grocery list, discover delicious recipes, and never run out of
-    essentials again.
-  </p>
-  <p class="text-center mb-4">
-    Explore our extensive collection of recipes and plan your week's meals with
-    ease.
-  </p>
-
-  <div class="row">
-    <h1>Featured Recipes</h1>
-
-    <div class="wrapper">
-      <section id="section1">
-        <a href="#section3" class="arrow__btn left-arrow">‹</a>
-
-        {% for recipes in feature_recipes1 %}
-        <div class="item recipe-image">
-          <a href="{% url 'recipe_detail' recipes.id %}">
-            <!-- Replace 'recipe_detail' with the actual name of your detail view and 'recipes.slug' with the appropriate field -->
-            <aside>
-              <img src="{{ recipes.image }}" />
-            </aside>
-          </a>
+<div class="container">
+  <main
+    class="position-relative d-flex align-items-center justify-content-center min-vh-100"
+  >
+    <section class="w-full py-6 md:py-10">
+      <div class="container px-4 md:px-6">
+        <div class="row align-items-center">
+          <!-- Title and Text Column -->
+          <div class="col-md-6">
+            <div class="space-y-3">
+              <h1
+                class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl py-3"
+              >
+                Delicious Recipes at Your Fingertips
+              </h1>
+              <p
+                class="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400"
+              >
+                Explore a world of flavor with our curated collection of
+                recipes. From quick & easy weeknight dinners to show-stopping
+                desserts, we've got you covered.
+              </p>
+            </div>
+          </div>
+          <!-- Image Column -->
+          <div class="col-md-6">
+            <img
+              class="mx-auto rounded-xl object-center"
+              src="https://www.allrecipes.com/thmb/xvlRRhK5ldXuGcXad8XDM5tTAfE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/223382_chicken-stir-fry_Rita-1x1-1-b6b835ccfc714bb6a8391a7c47a06a84.jpg"
+              
+            />
+          </div>
         </div>
+      </div>
+    </section>
+  </main>
 
-        {% endfor %}
 
-        <a href="#section2" class="arrow__btn right-arrow">›</a>
-      </section>
-
-      <section id="section2">
-        <a href="#section1" class="arrow__btn left-arrow">‹</a>
-
-        {% for recipes in feature_recipes2 %}
-        <div class="item">
-          <a href="{% url 'recipe_detail' recipes.id %}">
-            <!-- Replace 'recipe_detail' with the actual name of your detail view and 'recipes.slug' with the appropriate field -->
-            <img src="{{ recipes.image }}" />
-          </a>
-        </div>
-        {% endfor %}
-
-        <a href="#section3" class="arrow__btn right-arrow">›</a>
-      </section>
-
-      <section id="section3">
-        <a href="#section2" class="arrow__btn left-arrow">‹</a>
-
-        {% for recipes in feature_recipes3 %}
-        <div class="item">
-          <a href="{% url 'recipe_detail' recipes.id %}">
-            <!-- Replace 'recipe_detail' with the actual name of your detail view and 'recipes.slug' with the appropriate field -->
-            <img src="{{ recipes.image }}" />
-          </a>
-        </div>
-        {% endfor %}
-
-        <a href="#section1" class="arrow__btn right-arrow">›</a>
-      </section>
-    </div>
-  </div>
 </div>
 {% endblock %}

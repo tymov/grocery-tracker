@@ -2,4 +2,24 @@
 {% load static %}
 {% block body %}
 
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-md-6 offset-md-3">
+      <h1 class="fw-bold text-center">Edit Recipe</h1>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Render each field manually -->
+        {% for field in form %}
+          <div class="mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+          </div>
+        {% endfor %}
+        <!-- Save button -->
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

@@ -11,6 +11,22 @@
   </div>
 
   <div class="row mt-4">
+    <div class="col-md-8">
+      <aside>
+        <img src="{{recipe.image}}" style="height: 300px;" />
+      </aside>
+
+      <div class="mt-4 bg-gradient-primary text-black text-center py-4 px-3 rounded">
+        <h3>Instructions</h3>
+        <p class="lead">{{ formatted_instructions | safe }}</p>
+      </div>
+      {% if request.user == recipe.owner %}
+      <div class="mt-4 text-center">
+        <a href="{% url 'editRecipe' recipe.id %}" class="btn btn-primary">Edit Recipe</a>
+      </div>
+      {% endif %}
+    </div>
+
     <div class="col-md-4">
       <div class="ingredient-card shadow-sm glassmorphism">
         <div class="ingredient-card-header bg-gradient-primary text-black">
@@ -21,6 +37,10 @@
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <span class="font-weight-bold">{{ recipe_ingredient.ingredient }}</span>
             <span class="amount-badge px-3">{{ recipe_ingredient.amount }}</span>
+            {% if request.user == recipe.owner %}
+            <!-- Add button to edit ingredient -->
+            <a href="{% url 'editIngredient' id=recipe_ingredient.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+            {% endif %}
           </li>
           {% endfor %}
         </ul>
@@ -31,17 +51,6 @@
         {% endif %}
       </div>
       
-    </div>
-
-    <div class="col-md-8">
-      <aside>
-        <img src="{{recipe.image}}" style="height: 300px;" />
-      </aside>
-
-      <div class="mt-4 bg-gradient-primary text-black text-center py-4 px-3 rounded">
-        <h3>Instructions</h3>
-        <p class="lead">{{ formatted_instructions | safe }}</p>
-      </div>
     </div>
   </div>
 </div>

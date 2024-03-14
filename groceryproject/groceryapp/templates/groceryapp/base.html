@@ -36,23 +36,29 @@
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js"></script>
+
+    <script src="{% static 'animations.js' %}"></script>
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm py-3">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#"></a>
+    <nav class="navbar navbar-expand-lg navbar-light shadow-sm py-3">
+      <div class="container-fluid navbar-container">
+        <a class="navbar-brand" href="{% url 'index' %}">
+          <img src="{% static 'groceryapp/black-no-bg.svg' %}" class="navbar-logo">
+        </a>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
+          <ul class="navbar-nav d-md-none d-sm-auto">
             {% if request.user.is_authenticated %}
             <li class="nav-item mx-3">
               <a class="nav-link" href="{% url 'index' %}">Home</a>
             </li>
             <li class="nav-item mx-3">
-              <a class="nav-link" href="{% url 'items' %}">Manage Items</a>
+              <a class="nav-link" href="{% url 'items' %}">Manage Groceries</a>
             </li>
             <li class="nav-item mx-3">
-              <a class="nav-link" href="{% url 'recipes' %}">Manage Recipes</a>
+              <a class="nav-link" href="{% url 'recipes' %}">Recipes</a>
             </li>
             {% endif %}
           </ul>
@@ -61,21 +67,27 @@
         <div class="ms-auto">
           <ul class="navbar-nav">
             {% if request.user.is_authenticated %}
+            <!-- Avatar with first letter of username -->
+            <li class="nav-item me-3 d-flex align-items-center">
+              <div class="avatar">{{ request.user.username|first }}</div>
+            </li>
+            <!-- Logout icon -->
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+              <a class="nav-link" href="{% url 'logout' %}">
+                <i class="fas fa-sign-out-alt mx-2" style="transform: scale(1.2);"></i>
+              </a>
             </li>
             {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Login</a>
+            <li class="nav-item mx-2">
+              <a class="nav-link text-white" href="{% url 'login' %}">Login</a>
             </li>
-            {% comment %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'register' %}">Register</a>
+
+            <li class="nav-item mx-2">
+              <a class="nav-link text-white" href="{% url 'register' %}">Register</a>
             </li>
-            {% endcomment %} {% endif %}
+            {% endif %}
           </ul>
         </div>
-
         <button
           class="navbar-toggler"
           type="button"
@@ -89,6 +101,38 @@
         </button>
       </div>
     </nav>
-    {% block body %} {% endblock %}
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Side Navigation (Sidenav) -->
+        <div class="col-md-2 bg-rose-gradient text-white d-none hidden d-md-block">
+          <!-- Hidden on sm and below -->
+          <div class="py-4">
+            <ul class="navbar-nav sidenav d-none d-md-block">
+              {% if request.user.is_authenticated %}
+              <li class="nav-item mx-3 my-2">
+                <a class="nav-link" href="{% url 'index' %}">Home</a>
+              </li>
+              <li class="nav-item mx-3 my-2">
+                <a class="nav-link" href="{% url 'items' %}"
+                  >Manage Groceries</a
+                >
+              </li>
+              <li class="nav-item mx-3 my-2">
+                <a class="nav-link" href="{% url 'recipes' %}">Recipes</a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="col-md-10">
+          {% block body %}
+          <!-- Main content goes here -->
+          {% endblock %}
+        </div>
+      </div>
+    </div>
   </body>
 </html>

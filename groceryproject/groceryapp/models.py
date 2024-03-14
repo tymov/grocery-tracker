@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -26,6 +27,7 @@ class GroceryItem(models.Model):
     unit_of_measure = models.CharField(max_length=100, null=True, default=None)
     notes = models.TextField(null=True, default=None)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)  # Add this line
+    date_bought = models.DateField(default=timezone.now)
 
     def __str__(self):
         return self.name

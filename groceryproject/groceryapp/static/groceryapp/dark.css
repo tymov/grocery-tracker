@@ -1,0 +1,127 @@
+:root {
+    --background-color: #121212;
+    /* Dark background color */
+    --text-color: #ffffff;
+    /* Light text color */
+    --green-50: #122310;
+    /* Dark green-50 */
+    --green-100: #294225;
+    /* Dark green-100 */
+    --green-200: #30502b;
+    /* Dark green-200 */
+    --green-300: #386431;
+    /* Dark green-300 */
+    --green-400: #447e3b;
+    /* Dark green-400 */
+    --green-500: #5ca251;
+    /* Dark green-500 */
+    --green-600: #7ab771;
+    /* Dark green-600 */
+    --green-700: #a9d3a2;
+    /* Dark green-700 */
+    --green-800: #cfe7cb;
+    /* Dark green-800 */
+    --green-900: #e6f4e4;
+    /* Dark green-900 */
+    --green-950: #f5faf3;
+    /* Dark green-950 */
+    --white: #ffffff;
+    /* White */
+    --gray-50: #F5F7FF;
+    /* Light gray-50 */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    /* Set dark background color */
+    color: var(--text-color);
+    /* Set light text color */
+    line-height: 1.6;
+}
+
+.avatar {
+    background-color: rgb(203 213 225);
+    color: var(--text-color);
+}
+
+.bg-rose {
+    background-color: var(--green-400);
+}
+
+.bg-rose-gradient {
+    background: linear-gradient(90deg, var(--white) 50%, var(--white) 100%);
+}
+
+.bg-rose-outline {
+    border: 1px solid var(--green-400);
+    color: var(--green-400);
+}
+
+.bg-rose:hover {
+    background-color: var(--green-500);
+}
+
+.bg-rose-outline:hover {
+    background-color: var(--green-400);
+    color: var(--text-color);
+}
+
+.recipe-card {
+    background: #fff;
+    /* Light background */
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.8);
+    /* Dark shadow */
+}
+
+.recipe-card:hover {
+    transform: scale(1.035);
+}
+
+.recipe-card article h2,
+.recipe-card article h3 {
+    color: var(--text-color);
+    /* Light text color */
+}
+
+.recipe-card article p {
+    color: var(--text-color);
+    /* Light text color */
+}
+
+.recipe-card article p span {
+    color: var(--text-color);
+    /* Light text color */
+}
+
+.recipe-card article .ingredients {
+    color: var(--text-color);
+    /* Light text color */
+}
+
+.icon {
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/203277/recipe-card-icons.svg);
+}
+
+.navbar {
+    background-color: var(--background-color);
+    /* Set dark background color */
+}
+
+.navbar-logo {
+    height: 40px;
+    max-width: 300px;
+    transform: scale(.9);
+}
+
+.nav-link {
+    color: var(--green-950);
+    /* Dark green-950 */
+}
+
+.nav-link:hover,
+.nav-link:active,
+.nav-link:focus {
+    background-color: var(--green-400);
+    color: var(--green-50);
+}

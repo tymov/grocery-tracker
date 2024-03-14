@@ -1,28 +1,73 @@
-.pagination {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+:root {
+    --green-50: #f5faf3;
+    --green-100: #e6f4e4;
+    --green-200: #cfe7cb;
+    --green-300: #a9d3a2;
+    --green-400: #7ab771;
+    --green-500: #5ca251;
+    --green-600: #447e3b;
+    --green-700: #386431;
+    --green-800: #30502b;
+    --green-900: #294225;
+    --green-950: #122310;
+    --white: #fff;
+    --gray-50: #F5F7FF;
 }
 
-.pagination-link {
-    padding: 5px 10px;
-    margin: 0 5px;
-    color: #007bff;
-    text-decoration: none;
-    border: 1px solid #007bff;
-    border-radius: 5px;
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--gray-50);
+    color: #333;
+    line-height: 1.6;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgb(203 213 225);
+    color: #fff;
+    /* Default text color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.15rem;
+    text-transform: uppercase;
+}
+
+.bg-rose {
+    background-color: var(--green-400);
     transition: background-color 0.3s ease;
 }
 
-.pagination-link:hover {
-    background-color: #007bff;
-    color: white;
+.bg-rose-gradient {
+    background: linear-gradient(90deg, var(--white) 50%, var(--white) 100%);
+    transition: background 0.3s ease;
 }
 
-.pagination-info {
-    margin: 0 10px;
-    font-size: 14px;
+.bg-rose-outline {
+    transition: background-color 0.5s ease;
+    border: 1px solid var(--green-400);
+    color: var(--green-400);
+}
+
+.bg-rose:hover {
+    background-color: var(--green-500);
+}
+
+.bg-rose-outline:hover {
+    background-color: var(--green-400);
+    color: #fff;
 }
 
 img {
@@ -38,7 +83,7 @@ img {
     background: #fff;
     margin: 2em 0;
     width: 90%;
-    max-width: 496px;
+    max-width: 475px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.8);
@@ -63,7 +108,7 @@ img {
 }
 
 .recipe-card aside .button {
-    background: #57abf2;
+    background: var(--green-400);
     display: inline-block;
     position: absolute;
     top: 80%;
@@ -278,28 +323,45 @@ img {
 
 .wrapper section .arrow__btn {
     position: absolute;
-    color: #000000;
+    color: #ffffff;
     text-decoration: none;
     font-size: 6em;
-    background: #00000000;
+    background: linear-gradient(90deg, rgba(40, 40, 40, 0.7), rgba(40, 40, 40, 0.4));
     width: 80px;
+    height: 80px;
+    /* Added to make the button square */
+    line-height: 80px;
+    /* Added to vertically center the text */
     padding: 20px;
+    /* Removed padding */
     text-align: center;
     z-index: 1;
+    border: none;
+    /* Removed border */
+    cursor: pointer;
+    /* Added cursor */
+    transition: background 0.3s;
+    /* Added transition for smoother hover effect */
+}
+
+.wrapper section .arrow__btn:hover {
+    background: linear-gradient(90deg, rgba(40, 40, 40, 0.9), rgba(40, 40, 40, 0.6));
+}
+
+.wrapper section .left-arrow,
+.wrapper section .right-arrow {
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0;
+    /* Removed padding */
 }
 
 .wrapper section .left-arrow {
-    top: 0;
-    bottom: 0;
     left: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 0%);
 }
 
 .wrapper section .right-arrow {
-    top: 0;
-    bottom: 0;
     right: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 0%);
 }
 
 .ingredient-card {
@@ -352,4 +414,83 @@ img {
     border-radius: 10px;
     padding: 5px 10px;
     margin-left: auto;
+}
+
+@media screen and (min-width: 576px) {
+    .fade-up,
+    .fade-left,
+    .fade-right {
+        opacity: 0;
+        visibility: hidden;
+    }
+    .fade-up.animate,
+    .fade-left.animate,
+    .fade-right.animate {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+    }
+    .fade-left {
+        transform: translateX(-10%);
+        transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+    }
+    .fade-right {
+        transform: translateX(10%);
+        transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+    }
+    .fade-up {
+        transform: translateY(20%);
+        transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+    }
+}
+
+.navbar {
+    background-color: var(--white);
+}
+
+.navbar-logo {
+    height: 40px;
+    /* Adjust this value as needed */
+    /* Optionally, you can also set a max-width to prevent the image from becoming too wide */
+    max-width: 300px;
+    /* Adjust this value as needed */
+    transform: scale(.9);
+}
+
+.logout-icon {
+    transform: scale(1.2);
+}
+
+.sidenav {
+    height: 100vh;
+    /* Full-height */
+    position: -webkit-sticky;
+    /* For Safari */
+    position: sticky;
+    top: 0;
+    /* Adjust this value based on the height of your navbar */
+    z-index: 1000;
+    /* Ensure the sidenav appears above other content */
+    overflow-y: auto;
+    /* Allow vertical scrolling if content overflows */
+}
+
+.nav-link {
+    font-size: clamp(14px, 1vw, 20px);
+    font-weight: bold;
+    transition: transform 0.3s;
+    padding: 10px 10px;
+    border-radius: 5px;
+    color: var(--green-950);
+}
+
+.nav-link:hover,
+.nav-link:active,
+.nav-link:focus {
+    transform: scale(1.035);
+    /* Increase the size of the link on hover and when active */
+    background-color: var(--green-400);
+    /* Change background color on hover and when active */
+    color: var(--green-50);
+    /* Change text color on hover and when active */
 }
